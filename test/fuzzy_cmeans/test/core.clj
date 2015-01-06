@@ -1,6 +1,5 @@
 (ns fuzzy-cmeans.test.core
     (:require [fuzzy-cmeans.core :as fuzzy] :reload)
-    (:use [clojure.contrib.string :only (blank?)])
     (:use [incanter core stats charts])
     (:use [clojure.test]))
 
@@ -23,8 +22,8 @@
    (loop [side nil
           ret-vec (vector)
           more (seq temp)]
-     (if (not (blank? (first more)))
-       (recur 
+     (if (not (clojure.string/blank? (first more)))
+       (recur
          (println "first more:" (first more))
          (conj ret-vec (Double/parseDouble (first more)))
          (next more))
@@ -45,7 +44,7 @@
 ;------------------------------------------------------------------------------
 ; Client code
 ;------------------------------------------------------------------------------
-; Generate random points 
+; Generate random points
 (defn gen-cluster-points
   "Return a vector of n cluster points with random coordinate values
    within the given range"
@@ -65,22 +64,22 @@
 (defn main
   []
   (let [in-fuzzy 2.0
-        eps (Math/pow 10 -8) 
+        eps (Math/pow 10 -8)
         xmin 1 xmax 500
         ymin 1 ymax 500
-        num-clusters 5 
-        num-points 3000]
+        num-clusters 10
+        num-points 1000]
     (let [data-pts (gen-cluster-points num-points xmin xmax ymin ymax)
           centroids (gen-cluster-points num-clusters xmin xmax ymin ymax)]
       ; init fuzzy-cmeans
       (fuzzy/init-cmeans data-pts centroids in-fuzzy eps)
       ; print clusters just for fun..
       (fuzzy/print-clusters)
-      ; run 
+      ; run
       (fuzzy/run)
       )))
 ;------------------------------------------------------------------------------
-; Visualize with Incanter 
+; Visualize with Incanter
 ;------------------------------------------------------------------------------
 (defn third
   [more]
